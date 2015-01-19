@@ -1,6 +1,11 @@
-define(["jquery", "underscore", "backbone", "analytics", "templates", "views/detailView"], function(jQuery, _, Backbbone, Analytics, templates, detailView) {
-
-
+define([
+  "jquery", 
+  "underscore", 
+  "backbone", 
+  "analytics", 
+  "templates"
+  ], 
+  function(jQuery, _, Backbbone, Analytics, templates) {
 
   return Backbone.View.extend({
     tagName: "div",

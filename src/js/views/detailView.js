@@ -4,9 +4,10 @@ define([
     "backbone", 
     "analytics", 
     "templates",
+    "models/config",
     "router"
     ], 
-    function(jQuery, _, Backbbone, Analytics, templates, router) {
+    function(jQuery, _, Backbbone, Analytics, templates, config, router) {
       return Backbone.View.extend({
         tagName: "div",
         className: "modal",
@@ -16,7 +17,6 @@ define([
           "click .close-card": "removeHighlight",
           "click .facebook-share": "facebookShare",
           "click .twitter-share": "twitterShare"
-          // "touchstart .close-card": "removeHighlight",
          
         },
 
@@ -52,7 +52,6 @@ define([
             _.defer(function() { router.navigate("movie"); });
             var _this = this;
             _.delay(function() {
-              console.log("remove");
               _this.remove();
             }, 500);
           }
