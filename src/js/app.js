@@ -12,9 +12,10 @@ define([
   'models/tags',
   'models/config',
   'views/cardView',
+  'views/detailView',
   'router',
   'jquery_ui_touch_punch'
-  ], function(require, jQuery, imagesLoaded, brightcove, Isotope, Analytics, _, Backbone, templates, moviesCollection, tags, config, cardView, router) {
+  ], function(require, jQuery, imagesLoaded, brightcove, Isotope, Analytics, _, Backbone, templates, moviesCollection, tags, config, cardView, detailView, router) {
 
     
 
@@ -40,7 +41,8 @@ define([
     },
 
     initialize: function() {
-      this.listenTo(app.collections.questions, 'reset', this.addAll);
+      this.listenTo(this.collection, 'reset', this.addAll);
+      this.listenTo(this.collection, 'change', this.showDetail);
       this.render();
       
     },
@@ -49,23 +51,36 @@ define([
       var view = new cardView({model: question});
       this.$cardWrap.append(view.render().el);
     },
+    showDetail: function(model) {
+
+      if(model.get("highlight")) {
+        console.log(model);
+        this.detailView =  new detailView({model: model});
+
+        $(".iapp-page-wrap").append(this.detailView.render().el);
+        
+      }
+
+      
+
+    },
 
     template: templates["app-view.html"], 
 
     render: function() {
       this.$el.html(this.template({}));
       this.$cardWrap = this.$el.find("#card-wrap");
-      app.collections.questions.fetch({reset: true});
+      this.collection.fetch({reset: true});
     },
 
     $cardWrap: {},
 
     addAll: function() {
       this.$cardWrap.empty();
-      app.collections.questions.each(this.addOne, this);
+      this.collection.each(this.addOne, this);
       this.renderFilters();
       var $cardWrap = this.$cardWrap;
-      var credits = _.map(app.collections.questions.toJSON(), function(item) {
+      var credits = _.map(this.collection.toJSON(), function(item) {
         return item.photocredit;
       }).join(", ");
       this.$el.append('<p class="iapp-credits"><strong>Photos: </strong>' + credits);
@@ -95,15 +110,15 @@ define([
 
     removeHighlight: function() {
       Analytics.click("closed card");
-      app.views.detailView.model.set({"highlight": false});
+     this.detailView.model.set({"highlight": false});
     },
     addTimeStamp: function() {
-      var objData = app.collections.questions.toJSON();
+      var objData = this.collection.toJSON();
       this.$el.find(".time-stamp").html(objData[0].timestamp);
     },
 
     filterItems: function(tagArray) {
-      var filteredCollection = app.collections.questions.filter(function(model) {
+      var filteredCollection = this.collection.filter(function(model) {
         var result;
 
         _.each(tagArray, function(tag) {
@@ -172,8 +187,8 @@ define([
       function() {
         // make Isotope a jQuery plugin
         $.bridget( 'isotope', Isotope );
-        app.collections.questions = new moviesCollection(); 
-        app.views.appView = new app.views.AppView();
+        // app.collections.questions = new moviesCollection(); 
+        app.views.appView = new app.views.AppView({collection: new moviesCollection()});
         Backbone.history.start();
       }
     );

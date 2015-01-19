@@ -1,6 +1,3 @@
-// QuestionCard View
-  // ----
-
 define(["jquery", "underscore", "backbone", "analytics", "templates", "views/detailView"], function(jQuery, _, Backbbone, Analytics, templates, detailView) {
 
 
@@ -25,16 +22,8 @@ define(["jquery", "underscore", "backbone", "analytics", "templates", "views/det
 
     template: templates["card-front.html"],
 
-    initialize: function() {
-      this.listenTo(this.model, 'change', this.showDetail);
-      
-    },
-
     render: function() {
       this.$el.html(this.template(this.model.attributes));
-
-
-
       _.each(this.model.attributes.category, function(v, i) {
         this.$el.addClass(v);
         this.$el.attr( 'data-category', v);
@@ -46,19 +35,6 @@ define(["jquery", "underscore", "backbone", "analytics", "templates", "views/det
     setHighlight: function() {
       Analytics.click("opened card");
       this.model.set({"highlight": true});
-    },
-
-    showDetail: function() {
-
-      if(this.model.get("highlight")) {
-        var detailview =  new detailView({model: this.model});
-
-        $(".iapp-page-wrap").append(detailview.render().el);
-        
-      }
-
-      
-
     }
   });
 
