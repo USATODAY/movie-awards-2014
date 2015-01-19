@@ -10,30 +10,21 @@ define([
   'templates',
   'collections/movies',
   'models/tags',
+  'models/config',
   'jquery_ui_touch_punch'
-  ], function(require, jQuery, imagesLoaded, brightcove, Isotope, Analytics, _, Backbone, templates, moviesCollection, tags) {
+  ], function(require, jQuery, imagesLoaded, brightcove, Isotope, Analytics, _, Backbone, templates, moviesCollection, tags, config) {
 
     
 
 
   var app = app || {};
 
-  app.config = JSON.parse($('.staticinfo').html());
-  var isMobile = app.config.platform === 'mobile';
-
   _.extend(app, {
     models: {},
     collections: {},
     views: {}
   });
-
-
   
-  var MOBILE = isMobile;
-
-
-  
-  // app.collections.questions.bind("reset", _.once(Backbone.history.start));
 
   // App-wide View
   // ----
@@ -44,7 +35,6 @@ define([
       "click .modal-overlay": "removeHighlight",
       "click .iapp-filter-button": "setFilter",
       "click .iapp-filter-button-clear": "clearFilters"
-      // "touchstart .modal-overlay": "removeHighlight" 
     },
 
     initialize: function() {
@@ -81,7 +71,7 @@ define([
       $cardWrap.imagesLoaded( function() {
         $cardWrap.isotope( {
           itemSelector: '.card',
-          transitionDuration: (!MOBILE) ? '0.4s' : 0,
+          transitionDuration: (!config.isMobile) ? '0.4s' : 0,
           // layoutMode: 'fitRows'
         });
         $cardWrap.isotope("on", "layoutComplete", function(iso) {
@@ -296,7 +286,7 @@ define([
     facebookShare: function(e) {
         Analytics.click('facebook share clicked');
 
-        var shareURL = app.config.share_url;
+        var shareURL = config.share_url;
         var picture = this.model.get("basepath") + "fb-post.jpg";
         var description = "You should probably watch… " + this.model.get("movietitle") + ", filtered just for you by @usatoday’s #2014movieguide";
 
@@ -319,7 +309,7 @@ define([
     twitterShare: function(e) {
       Analytics.click('twitter share clicked');
 
-        if (!isMobile) {
+        if (!config.isMobile) {
             e.preventDefault();
 
             window.open(e.currentTarget.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,width=550,height=420');
