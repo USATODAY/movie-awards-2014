@@ -6,9 +6,6 @@ define([
   return Backbone.Model.extend({
     defaults: {
       highlight: false
-    }, 
-    initialize: function() {
-      // this.attributes.category = this.attributes.category.split(", ");
     }
   });
-})
+});
