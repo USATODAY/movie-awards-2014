@@ -11,8 +11,9 @@ define([
   'collections/movies',
   'models/tags',
   'models/config',
+  'views/cardView',
   'jquery_ui_touch_punch'
-  ], function(require, jQuery, imagesLoaded, brightcove, Isotope, Analytics, _, Backbone, templates, moviesCollection, tags, config) {
+  ], function(require, jQuery, imagesLoaded, brightcove, Isotope, Analytics, _, Backbone, templates, moviesCollection, tags, config, cardView) {
 
     
 
@@ -44,7 +45,7 @@ define([
     },
 
     addOne: function(question) {
-      var view = new app.views.QuestionCard({model: question});
+      var view = new cardView({model: question});
       this.$cardWrap.append(view.render().el);
     },
 
@@ -163,160 +164,6 @@ define([
     }
   });
 
-  // QuestionCard View
-  // ----
-
-  app.views.QuestionCard = Backbone.View.extend({
-    tagName: "div",
-
-    className: function() {
-      var categories = this.model.get("categories");
-      var classes = "card small-card";
-      _.each(categories, function(category) {
-        var tagClass; 
-        category == ":(" ? tagClass="sad" : tagClass = category.toLowerCase().replace(/(^\s+|[^a-zA-Z0-9 ]+|\s+$)/g,"").replace(/\s+/g, "-");
-        classes += (" " + tagClass);
-      });
-      return classes;
-    },
-
-    events: {
-      "click": "setHighlight",
-    },
-
-    template: templates["card-front.html"],
-
-    initialize: function() {
-      this.listenTo(this.model, 'change', this.showDetail);
-      
-    },
-
-    render: function() {
-      this.$el.html(this.template(this.model.attributes));
-
-
-
-      _.each(this.model.attributes.category, function(v, i) {
-        this.$el.addClass(v);
-        this.$el.attr( 'data-category', v);
-      }, this);
-
-      return this;
-    },
-
-    setHighlight: function() {
-      Analytics.click("opened card");
-      this.model.set({"highlight": true});
-    },
-
-    showDetail: function() {
-
-      if(this.model.get("highlight")) {
-        if (app.views.detailView) {
-          app.views.detailView.remove();
-        }
-        app.views.detailView = new app.views.DetailCard({model: this.model});
-
-        $(".iapp-page-wrap").append(app.views.detailView.render().el);
-        app.views.detailView.postRender(app.views.detailView.render().$el);
-      }
-
-      
-
-    }
-  });
-
-
-  app.views.DetailCard = Backbone.View.extend({
-    tagName: "div",
-    className: "modal",
-    template: templates["card-back.html"],
-
-    events: {
-      "click .close-card": "removeHighlight",
-      "click .facebook-share": "facebookShare",
-      "click .twitter-share": "twitterShare"
-      // "touchstart .close-card": "removeHighlight",
-     
-    },
-
-    initialize: function() {
-
-      app.router.navigate("movie/" + this.model.get("rowNumber"));
-      this.listenTo(this.model, 'change', this.removeCard);
-    },
-    render: function() {
-      this.$el.empty();
-      
-      this.$el.html(this.template(this.model.attributes));   
-      return this;
-    },
-
-    postRender: function(element) {
-
-      _.defer(function() {
-        $(".modal-overlay").addClass("show");
-
-        element.addClass("modal-show");
-      }, element);
-        
-    },
-
-    removeCard: function() {
-      
-      if(!this.model.get("highlight")) {
-        
-        $(".modal-overlay").removeClass("show");
-        this.$el.removeClass("modal-show");
-        _.defer(function() { app.router.navigate("movie"); });
-        var _this = this;
-        _.delay(function() {
-          console.log("remove");
-          _this.remove();
-        }, 500);
-      }
-      
-    },
-
-
-    removeHighlight: function() {
-      this.model.set({"highlight": false});
-    },
-
-    facebookShare: function(e) {
-        Analytics.click('facebook share clicked');
-
-        var shareURL = config.share_url;
-        var picture = this.model.get("basepath") + "fb-post.jpg";
-        var description = "You should probably watch… " + this.model.get("movietitle") + ", filtered just for you by @usatoday’s #2014movieguide";
-
-        
-        if (window.FB) {
-
-           e.preventDefault(); 
-
-           window.FB.ui({
-              method: 'feed',
-              href: window.location.href,
-              picture: "",
-              name: "2014 Oscar-nominated (and not-so-nominated) Movie Guide",
-              caption: shareURL,
-              description: description
-            }, function(response){});
-            
-        }
-    },
-    twitterShare: function(e) {
-      Analytics.click('twitter share clicked');
-
-        if (!config.isMobile) {
-            e.preventDefault();
-
-            window.open(e.currentTarget.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,width=550,height=420');
-        }
-    }
-
-  });
 
   
     
