@@ -2,6 +2,7 @@ define([
   'require',
   'jquery',
   'imagesloaded',
+  'brightcove',
   'isotope',
   'analytics',
   'underscore',
@@ -10,7 +11,7 @@ define([
   'collections/movies',
   'models/tags',
   'jquery_ui_touch_punch'
-  ], function(require, jQuery, imagesLoaded, Isotope, Analytics, _, Backbone, templates, moviesCollection, tags) {
+  ], function(require, jQuery, imagesLoaded, brightcove, Isotope, Analytics, _, Backbone, templates, moviesCollection, tags) {
 
     
 
