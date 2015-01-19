@@ -43,6 +43,8 @@ define([
     initialize: function() {
       this.listenTo(this.collection, 'reset', this.addAll);
       this.listenTo(this.collection, 'change', this.showDetail);
+      this.listenTo(router, "highlight", this.onHighlightRoute);
+      this.listenTo(router, "homeRoute", this.onHomeRoute);
       this.render();
       
     },
@@ -51,10 +53,35 @@ define([
       var view = new cardView({model: question});
       this.$cardWrap.append(view.render().el);
     },
+
+    onHighlightRoute: function(id) {
+      if (this.collection.toJSON().length == 0) {
+       this.collection.once("reset", function() {
+          var detailModel = _.find(this.collection.models, function(model) {
+            return model.get("rowNumber") == id;
+          });
+          detailModel.set({"highlight": true});
+        }, this);
+      } else {
+        var detailModel = _.find(this.collection.models, function(model) {
+          return model.get("rowNumber") == id;
+        });
+        detailModel.set({"highlight": true});
+      }
+    },
+
+    onHomeRoute: function() {
+       console.log("home");
+       var highlightModel = _.find(this.collection.models, function(model) {
+         return model.get("highlight") === true;
+       });
+       if (highlightModel) {
+        highlightModel.set({"highlight": false});
+       }
+    },
     showDetail: function(model) {
 
       if(model.get("highlight")) {
-        console.log(model);
         this.detailView =  new detailView({model: model});
 
         $(".iapp-page-wrap").append(this.detailView.render().el);
@@ -84,7 +111,6 @@ define([
         return item.photocredit;
       }).join(", ");
       this.$el.append('<p class="iapp-credits"><strong>Photos: </strong>' + credits);
-
       $cardWrap.imagesLoaded( function() {
         $cardWrap.isotope( {
           itemSelector: '.card',
@@ -99,13 +125,8 @@ define([
           } else {
             $(".iapp-no-results-wrap").remove();
           }
-
-          
         });
       });
-
-   
-
     },
 
     removeHighlight: function() {
@@ -115,25 +136,6 @@ define([
     addTimeStamp: function() {
       var objData = this.collection.toJSON();
       this.$el.find(".time-stamp").html(objData[0].timestamp);
-    },
-
-    filterItems: function(tagArray) {
-      var filteredCollection = this.collection.filter(function(model) {
-        var result;
-
-        _.each(tagArray, function(tag) {
-          if (_.contains(model.get("categories"), tag)){
-            result = true;
-          }
-        });
-
-        return result;
-      });
-
-      this.$cardWrap.empty();
-      _.each(filteredCollection, function(item) {
-        this.addOne(item);
-      }, this);
     },
 
     filtersTemplate: templates["tags.html"],
@@ -156,7 +158,6 @@ define([
         this.currentFilter.push(newFilter);
         
       }
-      // window.alert(this.currentFilter);
       var filterStr = "";
         _.each(this.currentFilter, function(filter) {
           filterStr += filter;
@@ -168,10 +169,8 @@ define([
           this.$el.find(".iapp-filter-button-clear").addClass("show");
         } else {
           this.$el.find(".iapp-filter-button-clear").removeClass("show");
-        }
-        
+        }   
     },
-
     clearFilters: function(e) {
       this.currentFilter = [];
       this.$el.find(".iapp-filter-button-clear").removeClass("show");
