@@ -171,7 +171,8 @@ module.exports = function(grunt) {
             "d3": '../../bower_components/d3/d3',
             "isotope": "../../bower_components/isotope/dist/isotope.pkgd",
             "imagesloaded": "../../bower_components/imagesloaded/imagesloaded.pkgd",
-            "mapbox": '../../bower_components/mapbox.js/mapbox.uncompressed'
+            "mapbox": '../../bower_components/mapbox.js/mapbox.uncompressed',
+            "brightcove": 'lib/BrightcoveExperiences'
               // "api/ads": "api/ads",
               // "api/analytics": "api/analytics"
           },
@@ -195,6 +196,9 @@ module.exports = function(grunt) {
                 // "jquery_ui"
               ],
               "exports": "jQuery"
+            },
+            "brightcove": {
+              "exports": "brightcove"
             }
           }
         }
@@ -231,7 +235,8 @@ module.exports = function(grunt) {
             "d3": '../../bower_components/d3/d3',
             "isotope": "../../bower_components/isotope/dist/isotope.pkgd",
             "imagesloaded": "../../bower_components/imagesloaded/imagesloaded.pkgd",
-            "mapbox": '../../bower_components/mapbox.js/mapbox.uncompressed'
+            "mapbox": '../../bower_components/mapbox.js/mapbox.uncompressed',
+            "brightcove": 'lib/BrightcoveExperiences'
               // "api/ads": "api/ads",
               // "api/analytics": "api/analytics"
           },
@@ -249,6 +254,9 @@ module.exports = function(grunt) {
                 "jquery_ui"
               ],
               "exports": "jQuery"
+            },
+            "brightcove": {
+              "exports": "brightcove"
             }
           }
         }

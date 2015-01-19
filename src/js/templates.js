@@ -17,9 +17,19 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '  <div class="card card-detail">\n\n    <div class="close-card"></div>\n\n  <div class="iapp-vid-wrap">\n    <iframe width="100%" height="100%" src="' +
+__p += '  <div class="card card-detail">\n\n    <div class="close-card"></div>\n\n  <div class="iapp-vid-wrap">\n    \n    \n\n    ';
+ if(brightcoveid !== "") { ;
+__p += '\n    <!-- Start of Brightcove Player -->\n\n    <div style="display:none">\n\n    </div>\n    <!--\n    By use of this code snippet, I agree to the Brightcove Publisher T and C \n    found at https://accounts.brightcove.com/en/terms-and-conditions/. \n    -->\n\n    \n\n    <object id="myExperience' +
+((__t = (brightcoveid)) == null ? '' : __t) +
+'" class="BrightcoveExperience">\n      <param name="bgcolor" value="#FFFFFF" />\n      <param name="width" value="640" />\n      <param name="height" value="390" />\n      <param name="playerID" value="3987831214001" />\n      <param name="playerKey" value="AQ~~,AAAABvaL8JE~,ufBHq_I6FnymJRV25NtXQUepW01Qlwaa" />\n      <param name="isSlim" value="true" />\n      <param name="dynamicStreaming" value="true" />\n       <param name="forceHTML" value="true" />\n        \n      <param name="@videoPlayer" value="' +
+((__t = (brightcoveid)) == null ? '' : __t) +
+'" />\n    </object>\n\n    <!-- \n    This script tag will cause the Brightcove Players defined above it to be created as soon\n    as the line is read by the browser. If you wish to have the player instantiated only after\n    the rest of the HTML is processed and the page load is complete, remove the line.\n    -->\n    <script type="text/javascript">brightcove.createExperiences();</script>\n\n    <!-- End of Brightcove Player -->​\n\n    ';
+ } else { ;
+__p += '\n\n    <iframe width="100%" height="100%" src="' +
 ((__t = ( trailerlink )) == null ? '' : __t) +
-'" frameborder="0" allowfullscreen></iframe>\n  </div>\n\n    <h2 class="card-back-header">' +
+'" frameborder="0" allowfullscreen></iframe>\n\n    ';
+};
+__p += '\n  </div>\n\n    <h2 class="card-back-header">' +
 ((__t = ( movietitle )) == null ? '' : __t) +
 ' </h2>\n    <p class="iapp-summary">' +
 ((__t = ( summary )) == null ? '' : __t) +
