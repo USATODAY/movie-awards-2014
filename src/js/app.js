@@ -12,8 +12,9 @@ define([
   'models/tags',
   'models/config',
   'views/cardView',
+  'router',
   'jquery_ui_touch_punch'
-  ], function(require, jQuery, imagesLoaded, brightcove, Isotope, Analytics, _, Backbone, templates, moviesCollection, tags, config, cardView) {
+  ], function(require, jQuery, imagesLoaded, brightcove, Isotope, Analytics, _, Backbone, templates, moviesCollection, tags, config, cardView, router) {
 
     
 
@@ -164,59 +165,7 @@ define([
     }
   });
 
-
   
-    
-  app.Router = Backbone.Router.extend({
-
-    routes: {
-      "": "home",
-      "movie/:id":                 "highlight",    // #/1
-      
-    },
-
-    home: function() {
-
-
-        
-
-
-      
-
-       var highlightModel = _.find(app.collections.questions.models, function(model) {
-        
-        return model.get("highlight") === true;
-      });
-       if(highlightModel) {
-        highlightModel.set({"highlight": false});
-       }
-       
-    },
-
-    highlight: function(id) {
-
-      
-      if (app.collections.questions.toJSON().length == 0) {
-        app.collections.questions.once("reset", function() {
-          var detailModel = _.find(app.collections.questions.models, function(model) {
-        
-            return model.get("rowNumber") == id;
-          });
-          detailModel.set({"highlight": true});
-          app.views.detailView = new app.views.DetailCard({model: detailModel});
-
-          $(".iapp-page-wrap").append(app.views.detailView.render().el);
-          app.views.detailView.postRender(app.views.detailView.render().$el);
-        });
-      }
-      
-    }
-
-  });
-
-  
-
-
   app.init = function() {
 
     require( [ 'jquery-bridget/jquery.bridget' ],
@@ -225,7 +174,6 @@ define([
         $.bridget( 'isotope', Isotope );
         app.collections.questions = new moviesCollection(); 
         app.views.appView = new app.views.AppView();
-        app.router = new app.Router();
         Backbone.history.start();
       }
     );
